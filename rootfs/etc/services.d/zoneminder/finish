@@ -1,0 +1,10 @@
+#!/command/with-contenv bash
+. "/usr/local/bin/logger"
+# ==============================================================================
+# ZoneMinder
+# Take down the S6 supervision tree if db is no longer accessible
+# ==============================================================================
+
+/run/s6/basedir/bin/halt
+
+s6-setuidgid www-data /usr/bin/zmpkg.pl stop

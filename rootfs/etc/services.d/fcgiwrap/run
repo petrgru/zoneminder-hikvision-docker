@@ -1,0 +1,15 @@
+#!/command/with-contenv bash
+. "/usr/local/bin/logger"
+# ==============================================================================
+# fcgiwrap
+# Runs fcgiwrap
+# ==============================================================================
+
+echo "Starting fcgiwrap..." | info
+
+# Remove old socket if existing
+rm /zoneminder/run/fcgiwrap.socket > /dev/null 2>&1
+
+exec s6-setuidgid www-data \
+    fdmove -c 2 1 \
+      /usr/sbin/fcgiwrap -f -c "${FCGIWRAP_PROCESSES}" -s unix:/zoneminder/run/fcgiwrap.socket

@@ -1,0 +1,19 @@
+#!/command/with-contenv bash
+. "/usr/local/bin/logger"
+# ==============================================================================
+# Mariadb
+# Stub service to monitor db status
+# ==============================================================================
+
+s6-notifyoncheck -n 1000 echo "Waiting for Mariadb to start" | info
+
+# Wait until db is initially ready before polling
+s6-svwait -U /run/service/mariadb
+echo "Mariadb is up! Proceeding to monitoring." | info
+
+# Need to sleep to act like service is running
+# Terminate container if db dies
+until ! (/run/service/mariadb/data/check); do
+  sleep 1
+done
+echo "Mariadb could not be reached! Exiting..." | error
